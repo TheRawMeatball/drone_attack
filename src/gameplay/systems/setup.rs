@@ -32,6 +32,7 @@ pub fn setup_system(
 
     commands
         .spawn(SpriteBundle {
+            transform: Transform::from_translation(Vec3::unit_z() * 2.),
             sprite: Sprite {
                 size: Vec2::new(64., 64.),
                 resize_mode: SpriteResizeMode::Manual,
