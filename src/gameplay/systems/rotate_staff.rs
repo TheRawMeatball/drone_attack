@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::gameplay::*;
+use bevy::prelude::*;
 
 pub fn rotate_staff_system(
     mut staff_rotator: Query<(&mut Transform, &GlobalTransform), With<StaffRotator>>,

@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::gameplay::*;
+use bevy::prelude::*;
 
 pub fn target_selection_system(
     enemies: Query<(Entity, &Transform), With<Enemy>>,

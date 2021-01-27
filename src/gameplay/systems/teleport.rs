@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::gameplay::*;
+use bevy::prelude::*;
 
 pub fn teleport_system(
     closest_enemy: Res<ClosestEnemy>,

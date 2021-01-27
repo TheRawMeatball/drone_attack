@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::gameplay::*;
+use bevy::prelude::*;
 
 pub fn target_highlight_system(
     closest_enemy: Res<ClosestEnemy>,

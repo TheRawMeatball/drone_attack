@@ -1,11 +1,11 @@
 mod asset_manager;
-mod gameplay;
 mod game_over;
+mod gameplay;
 
 pub use asset_manager::*;
 use bevy::prelude::*;
-use gameplay::GameplayPlugin;
 use game_over::GameOverPlugin;
+use gameplay::GameplayPlugin;
 
 #[derive(Clone, PartialEq, Eq)]
 pub enum AppState {

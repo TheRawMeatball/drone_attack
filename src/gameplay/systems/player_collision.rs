@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::gameplay::*;
+use bevy::prelude::*;
 
 pub fn player_collision_system(
     mut player: Query<(&Transform, &mut Damage), With<Player>>,

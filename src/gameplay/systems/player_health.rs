@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::gameplay::*;
+use bevy::prelude::*;
 
 pub fn player_health_system(
     mut query: Query<(&mut Handle<ColorMaterial>, &Damage), (Changed<Damage>, With<Player>)>,

@@ -1,5 +1,5 @@
-pub use bevy::prelude::*;
 use crate::gameplay::*;
+pub use bevy::prelude::*;
 
 pub fn enemy_collision_system(
     enemies: Query<(Entity, &Transform, &mut Velocity, &mut Damage), With<Enemy>>,

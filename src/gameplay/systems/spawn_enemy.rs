@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::gameplay::*;
+use bevy::prelude::*;
 
 #[derive(Default)]
 pub struct SpawnTimer(f32);

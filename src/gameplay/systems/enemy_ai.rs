@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use crate::gameplay::*;
+use bevy::prelude::*;
 
 pub fn enemy_ai_system(
     player: Query<&Transform, With<Player>>,
