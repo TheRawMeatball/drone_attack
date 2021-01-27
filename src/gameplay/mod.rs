@@ -33,63 +33,63 @@ impl Plugin for GameplayPlugin {
                 .on_state_update(AppState::Running, rotate_staff_system.system())
                 .on_state_update(
                     AppState::Running,
-                    spawn_enemy_system.system().after("PlayerCollision"),
-                )
-                .on_state_update(
-                    AppState::Running,
-                    target_selection_system.system().label("TargetSelect"),
-                )
-                .on_state_update(
-                    AppState::Running,
                     enemy_collision_system
                         .system()
-                        .label("EnemyCollision")
-                        .before("Velocity"),
+                        // .label("EnemyCollision")
+                        // .before("Velocity"),
                 )
                 .on_state_update(
                     AppState::Running,
-                    target_highlight_system.system().after("TargetSelect"),
+                    target_selection_system.system()//.label("TargetSelect"),
                 )
                 .on_state_update(
                     AppState::Running,
-                    player_collision_system
-                        .system()
-                        .label("PlayerCollision")
-                        .before("Velocity")
-                        .after("Teleport"),
+                    target_highlight_system.system()//.after("TargetSelect"),
                 )
                 .on_state_update(
                     AppState::Running,
                     teleport_system
                         .system()
-                        .label("Teleport")
-                        .after("TargetSelect")
-                        .before("Velocity"),
+                        // .label("Teleport")
+                        // .after("TargetSelect")
+                        // .before("Velocity"),
+                )
+                .on_state_update(
+                    AppState::Running,
+                    player_collision_system
+                        .system()
+                        // .label("PlayerCollision")
+                        // .before("Velocity")
+                        // .after("Teleport"),
                 )
                 .on_state_update(
                     AppState::Running,
                     drone_health_system
                         .system()
-                        .after("Teleport")
-                        .after("EnemyCollision"),
+                        // .after("Teleport")
+                        // .after("EnemyCollision"),
                 )
                 .on_state_update(
                     AppState::Running,
-                    player_health_system.system().after("PlayerCollision"),
+                    player_health_system.system()//.after("PlayerCollision"),
                 )
                 .on_state_update(
                     AppState::Running,
                     enemy_ai_system
                         .system()
-                        .label("EnemyAi")
-                        .before("Velocity")
-                        .after("PlayerCollision")
-                        .after("EnemyCollision")
-                        .after("Teleport"),
+                        // .label("EnemyAi")
+                        // .before("Velocity")
+                        // .after("PlayerCollision")
+                        // .after("EnemyCollision")
+                        // .after("Teleport"),
                 )
                 .on_state_update(
                     AppState::Running,
-                    velocity_system.system().label("Velocity"),
+                    velocity_system.system()//.label("Velocity"),
+                )
+                .on_state_update(
+                    AppState::Running,
+                    spawn_enemy_system.system()//.after("PlayerCollision"),
                 )
         })
         .init_resource::<EnemyCount>()
