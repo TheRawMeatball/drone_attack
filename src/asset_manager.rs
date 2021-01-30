@@ -3,7 +3,7 @@ use std::convert::TryInto;
 use bevy::{
     asset::LoadState,
     audio::AudioSource,
-    ecs::{Commands, FromResources, Res, ResMut, Resources, State},
+    ecs::{Commands, FromResources, Res, ResMut, Resources, SetState},
     math::Vec2,
     prelude::{AssetServer, Assets, Color, ColorMaterial, Handle, Mesh, Texture},
 };
@@ -220,7 +220,7 @@ pub fn load_poll_system(
     sfx: Res<GameSfx>,
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut texture_sources: ResMut<Assets<Texture>>,
-    mut state: ResMut<State<AppState>>,
+    mut state: ResMut<SetState<AppState>>,
     commands: &mut Commands,
 ) {
     let done_loading = music
@@ -272,6 +272,6 @@ pub fn load_poll_system(
             .sampler
             .set_address_mode(bevy::render::texture::AddressMode::Repeat);
 
-        state.set_next(AppState::Running).unwrap();
+        state.schedule_operation(bevy::ecs::ScheduledOperation::Next(AppState::Running));
     }
 }

@@ -44,6 +44,7 @@ pub fn spawn_enemy_system(
             .with(Enemy)
             .with(Ineffective(Timer::new(Duration::from_millis(500), false)))
             .with(Velocity::default())
-            .with(Damage(0));
+            .with(Damage(0))
+            .with(GameplayEntity);
     }
 }

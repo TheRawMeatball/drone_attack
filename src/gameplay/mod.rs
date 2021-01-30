@@ -4,10 +4,10 @@ mod systems;
 
 use std::time::Duration;
 
-use bevy::{prelude::*, render::camera::Camera};
+use bevy::{ecs::StateSetBuilder, prelude::*, render::camera::Camera};
 use rand::Rng;
 
-use crate::{AppState, GameMaterials, GameMeshes, GameSfx, STATE_STAGE};
+use crate::{AppState, GameMaterials, GameSfx};
 
 use components::*;
 use resources::*;
@@ -24,75 +24,78 @@ const SPAWN_DIST: f32 = 128. * 3.;
 
 pub struct GameplayPlugin;
 
+impl GameplayPlugin {
+    pub fn add_systems(builder: &mut StateSetBuilder<AppState>) {
+        builder
+            .add_on_enter(AppState::Running, setup_system.system())
+            .add_on_exit(AppState::Running, cleanup_system.system())
+            .add_on_update(AppState::Running, rotate_staff_system.system())
+            .add_on_update(
+                AppState::Running,
+                spawn_enemy_system.system().after("PlayerCollision"),
+            )
+            .add_on_update(
+                AppState::Running,
+                target_selection_system.system().label("TargetSelect"),
+            )
+            .add_on_update(
+                AppState::Running,
+                enemy_collision_system
+                    .system()
+                    .label("EnemyCollision")
+                    .before("Velocity"),
+            )
+            .add_on_update(
+                AppState::Running,
+                target_highlight_system.system().after("TargetSelect"),
+            )
+            .add_on_update(
+                AppState::Running,
+                player_collision_system
+                    .system()
+                    .label("PlayerCollision")
+                    .before("Velocity")
+                    .after("Teleport"),
+            )
+            .add_on_update(
+                AppState::Running,
+                teleport_system
+                    .system()
+                    .label("Teleport")
+                    .after("TargetSelect")
+                    .before("Velocity"),
+            )
+            .add_on_update(
+                AppState::Running,
+                drone_health_system
+                    .system()
+                    .after("Teleport")
+                    .after("EnemyCollision"),
+            )
+            .add_on_update(
+                AppState::Running,
+                player_health_system.system().after("PlayerCollision"),
+            )
+            .add_on_update(
+                AppState::Running,
+                enemy_ai_system
+                    .system()
+                    .label("EnemyAi")
+                    .before("Velocity")
+                    .after("PlayerCollision")
+                    .after("EnemyCollision")
+                    .after("Teleport"),
+            )
+            .add_on_update(
+                AppState::Running,
+                velocity_system.system().label("Velocity"),
+            );
+    }
+}
+
 impl Plugin for GameplayPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app.stage(STATE_STAGE, |state: &mut StateStage<AppState>| {
-            state
-                .on_state_enter(AppState::Running, setup_system.system())
-                .on_state_exit(AppState::Running, cleanup_system.system())
-                .on_state_update(AppState::Running, rotate_staff_system.system())
-                .on_state_update(
-                    AppState::Running,
-                    spawn_enemy_system.system().after("PlayerCollision"),
-                )
-                .on_state_update(
-                    AppState::Running,
-                    target_selection_system.system().label("TargetSelect"),
-                )
-                .on_state_update(
-                    AppState::Running,
-                    enemy_collision_system
-                        .system()
-                        .label("EnemyCollision")
-                        .before("Velocity"),
-                )
-                .on_state_update(
-                    AppState::Running,
-                    target_highlight_system.system().after("TargetSelect"),
-                )
-                .on_state_update(
-                    AppState::Running,
-                    player_collision_system
-                        .system()
-                        .label("PlayerCollision")
-                        .before("Velocity")
-                        .after("Teleport"),
-                )
-                .on_state_update(
-                    AppState::Running,
-                    teleport_system
-                        .system()
-                        .label("Teleport")
-                        .after("TargetSelect")
-                        .before("Velocity"),
-                )
-                .on_state_update(
-                    AppState::Running,
-                    drone_health_system
-                        .system()
-                        .after("Teleport")
-                        .after("EnemyCollision"),
-                )
-                .on_state_update(
-                    AppState::Running,
-                    player_health_system.system().after("PlayerCollision"),
-                )
-                .on_state_update(
-                    AppState::Running,
-                    enemy_ai_system
-                        .system()
-                        .label("EnemyAi")
-                        .before("Velocity")
-                        .after("PlayerCollision")
-                        .after("EnemyCollision")
-                        .after("Teleport"),
-                )
-                .on_state_update(
-                    AppState::Running,
-                    velocity_system.system().label("Velocity"),
-                )
-        })
-        .init_resource::<EnemyCount>()
-        .init_resource::<ClosestEnemy>();
+        app.init_resource::<EnemyCount>()
+            .init_resource::<ClosestEnemy>();
     }
 }

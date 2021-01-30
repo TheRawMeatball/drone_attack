@@ -3,37 +3,62 @@ mod game_over;
 mod gameplay;
 
 pub use asset_manager::*;
-use bevy::prelude::*;
+use bevy::{
+    ecs::{SetState, StateSetBuilder},
+    prelude::*,
+};
 use game_over::GameOverPlugin;
 use gameplay::GameplayPlugin;
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub enum AppState {
     Loading,
     Running,
     GameOver,
+    Paused,
+    MainMenu,
 }
-
-const STATE_STAGE: &str = "DRONE_ATTACK";
 
 pub use gameplay::{DRONE_HEALTH, PLAYER_HEALTH};
 
 fn main() {
-    let mut state = StateStage::<AppState>::default();
-    state.on_state_update(AppState::Loading, load_poll_system.system());
+    let mut state = StateSetBuilder::<AppState>::default();
+    state.add_on_update(AppState::Loading, load_poll_system.system());
+    state.add_on_exit(AppState::Loading, on_load_end.system());  
+
+    GameplayPlugin::add_systems(&mut state);
+    GameOverPlugin::add_systems(&mut state);
 
     App::build()
         .add_plugins(DefaultPlugins)
-        .add_resource(State::new(AppState::Loading))
+        .add_resource(SetState::new(AppState::Loading))
         .init_resource::<GameTextures>()
         .init_resource::<GameSfx>()
         .init_resource::<GameMusic>()
         .init_resource::<GameMeshes>()
-        .add_stage_after(stage::UPDATE, STATE_STAGE, state)
         .add_plugin(GameplayPlugin)
         .add_plugin(GameOverPlugin)
+        .stage(stage::UPDATE, |stage: &mut SystemStage| {
+            stage.add_system_set(state.finalize())
+        })
         .add_system(music_system.system())
         .run();
+}
+
+pub struct Background;
+
+fn on_load_end(commands: &mut Commands, meshes: Res<GameMeshes>, textures: Res<GameMaterials>) {
+    commands
+        .spawn(SpriteBundle {
+            sprite: Sprite {
+                size: Vec2::new(64., 64.),
+                resize_mode: SpriteResizeMode::Manual,
+            },
+            mesh: meshes.plate.clone(),
+            material: textures.plate.clone(),
+            ..Default::default()
+        })
+        .with(Background);
 }
 
 fn music_system(
@@ -43,7 +68,7 @@ fn music_system(
     time: Res<Time>,
     mut active_track: Local<usize>,
     mut until_done: Local<Timer>,
-    state: Res<State<AppState>>,
+    state: Res<SetState<AppState>>,
 ) {
     if *state.current() == AppState::Loading {
         *active_track = tracks.tracks.len() - 1;

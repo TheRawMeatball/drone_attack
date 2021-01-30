@@ -4,7 +4,6 @@ use bevy::prelude::*;
 pub fn setup_system(
     commands: &mut Commands,
     textures: Res<GameMaterials>,
-    meshes: Res<GameMeshes>,
 ) {
     commands
         .spawn(SpriteBundle {
@@ -13,6 +12,7 @@ pub fn setup_system(
             ..Default::default()
         })
         .with(Player)
+        .with(GameplayEntity)
         .with(Damage(0))
         .with_children(|parent| {
             parent
@@ -21,12 +21,15 @@ pub fn setup_system(
                     GlobalTransform::default(),
                     StaffRotator,
                 ))
+                .with(GameplayEntity)
                 .with_children(|parent| {
-                    parent.spawn(SpriteBundle {
-                        transform: Transform::from_translation(Vec3::new(0., 10., 1.)),
-                        material: textures.staff.clone(),
-                        ..Default::default()
-                    });
+                    parent
+                        .spawn(SpriteBundle {
+                            transform: Transform::from_translation(Vec3::new(0., 10., 1.)),
+                            material: textures.staff.clone(),
+                            ..Default::default()
+                        })
+                        .with(GameplayEntity);
                 });
         });
 
@@ -40,17 +43,6 @@ pub fn setup_system(
             material: textures.circle.clone(),
             ..Default::default()
         })
-        .with(TargetCircle);
-
-    commands
-        .spawn(SpriteBundle {
-            sprite: Sprite {
-                size: Vec2::new(64., 64.),
-                resize_mode: SpriteResizeMode::Manual,
-            },
-            mesh: meshes.plate.clone(),
-            material: textures.plate.clone(),
-            ..Default::default()
-        })
-        .with(Background);
+        .with(TargetCircle)
+        .with(GameplayEntity);
 }

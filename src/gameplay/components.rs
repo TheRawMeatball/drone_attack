@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+pub struct GameplayEntity;
+
 pub struct StaffRotator;
 pub struct Enemy;
 pub struct Ineffective(pub Timer);
@@ -7,6 +9,5 @@ pub struct Ineffective(pub Timer);
 pub struct Velocity(pub Vec2);
 pub struct Player;
 pub struct TargetCircle;
-pub struct Background;
 #[derive(Default)]
 pub struct Damage(pub usize);

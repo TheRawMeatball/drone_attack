@@ -1,13 +1,25 @@
-use bevy::prelude::*;
+mod components;
+mod resources;
+mod systems;
 
-use crate::{AppState, STATE_STAGE};
+use bevy::{ecs::StateSetBuilder, prelude::*};
+
+use crate::{AppState, GameMaterials};
+
+use components::*;
+use resources::*;
+use systems::*;
 
 pub struct GameOverPlugin;
 
-impl Plugin for GameOverPlugin {
-    fn build(&self, app: &mut AppBuilder) {
-        app.stage(STATE_STAGE, |state: &mut StateStage<AppState>| {
-            state.on_state_enter(AppState::GameOver, (|| ()).system())
-        });
+impl GameOverPlugin {
+    pub fn add_systems(builder: &mut StateSetBuilder<AppState>) {
+        builder
+            .add_on_enter(AppState::GameOver, setup_system.system())
+            .add_on_exit(AppState::GameOver, cleanup_system.system());
     }
+}
+
+impl Plugin for GameOverPlugin {
+    fn build(&self, _app: &mut AppBuilder) {}
 }
