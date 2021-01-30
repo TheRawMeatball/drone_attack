@@ -24,7 +24,7 @@ pub use gameplay::{DRONE_HEALTH, PLAYER_HEALTH};
 fn main() {
     let mut state = StateSetBuilder::<AppState>::default();
     state.add_on_update(AppState::Loading, load_poll_system.system());
-    state.add_on_exit(AppState::Loading, on_load_end.system());  
+    state.add_on_exit(AppState::Loading, on_load_end.system());
 
     GameplayPlugin::add_systems(&mut state);
     GameOverPlugin::add_systems(&mut state);
@@ -39,7 +39,8 @@ fn main() {
         .add_plugin(GameplayPlugin)
         .add_plugin(GameOverPlugin)
         .stage(stage::UPDATE, |stage: &mut SystemStage| {
-            stage.add_system_set(state.finalize())
+            state.finalize(stage);
+            stage
         })
         .add_system(music_system.system())
         .run();
@@ -58,7 +59,9 @@ fn on_load_end(commands: &mut Commands, meshes: Res<GameMeshes>, textures: Res<G
             material: textures.plate.clone(),
             ..Default::default()
         })
-        .with(Background);
+        .with(Background)
+        .spawn(Camera2dBundle::default())
+        .spawn(CameraUiBundle::default());
 }
 
 fn music_system(

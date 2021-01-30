@@ -17,6 +17,7 @@ pub fn rotate_staff_system(
     let mut staff_rotator = staff_rotator.iter_mut().next().unwrap();
 
     let relative_pos = cursor_position - staff_rotator.1.translation.truncate();
+
     staff_rotator.0.rotation = Quat::from_rotation_z(
         f32::atan2(relative_pos.y, relative_pos.x) - std::f32::consts::FRAC_PI_2,
     );

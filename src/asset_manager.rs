@@ -237,8 +237,6 @@ pub fn load_poll_system(
         && server.get_load_state(sfx.teleport.id) == LoadState::Loaded;
 
     if done_loading {
-        commands.spawn(bevy::prelude::Camera2dBundle::default());
-
         commands.insert_resource(GameMaterials {
             circle: materials.add(ColorMaterial::texture(textures.circle.clone())),
             drone: (0..DRONE_HEALTH)
