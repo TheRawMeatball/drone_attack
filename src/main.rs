@@ -7,6 +7,7 @@ use bevy::{
     ecs::{SetState, StateSetBuilder},
     prelude::*,
 };
+use bevy_ninepatch_shader::NinepatchUIShaderPlugin;
 use game_over::GameOverPlugin;
 use gameplay::GameplayPlugin;
 
@@ -31,6 +32,7 @@ fn main() {
 
     App::build()
         .add_plugins(DefaultPlugins)
+        .add_plugin(NinepatchUIShaderPlugin)
         .add_resource(SetState::new(AppState::Loading))
         .init_resource::<GameTextures>()
         .init_resource::<GameSfx>()

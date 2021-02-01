@@ -1,12 +1,7 @@
 use std::convert::TryInto;
 
-use bevy::{
-    asset::LoadState,
-    audio::AudioSource,
-    ecs::{Commands, FromResources, Res, ResMut, Resources, SetState},
-    math::Vec2,
-    prelude::{AssetServer, Assets, Color, ColorMaterial, Handle, Mesh, Texture},
-};
+use bevy::{asset::LoadState, audio::AudioSource, ecs::{Commands, FromResources, Res, ResMut, Resources, SetState}, math::{Vec2, Vec4}, prelude::{AssetServer, Assets, Color, ColorMaterial, Handle, Mesh, Texture}};
+use bevy_ninepatch_shader::NinepatchMaterial;
 
 use crate::{AppState, DRONE_HEALTH, PLAYER_HEALTH};
 
@@ -22,9 +17,11 @@ pub struct GameMaterials {
     pub circle: Handle<ColorMaterial>,
     pub drone: [Handle<ColorMaterial>; DRONE_HEALTH],
     pub drone_maker: Handle<ColorMaterial>,
+    pub bordered_ui: Handle<NinepatchMaterial>,
     pub disc: [Handle<ColorMaterial>; PLAYER_HEALTH],
     pub plate: Handle<ColorMaterial>,
     pub staff: Handle<ColorMaterial>,
+    pub none: Handle<ColorMaterial>,
 }
 
 impl GameTextures {
@@ -219,6 +216,7 @@ pub fn load_poll_system(
     music: Res<GameMusic>,
     sfx: Res<GameSfx>,
     mut materials: ResMut<Assets<ColorMaterial>>,
+    mut np_materials: ResMut<Assets<NinepatchMaterial>>,
     mut texture_sources: ResMut<Assets<Texture>>,
     mut state: ResMut<SetState<AppState>>,
     commands: &mut Commands,
@@ -262,6 +260,13 @@ pub fn load_poll_system(
                 .unwrap(),
             plate: materials.add(ColorMaterial::texture(textures.plate.clone())),
             staff: materials.add(ColorMaterial::texture(textures.staff.clone())),
+            bordered_ui: np_materials.add(NinepatchMaterial {
+                color: Color::WHITE,
+                bounds: Vec4::one() * 14.,
+                scale: Vec2::one() * 3.,
+                texture: textures.drone_maker.clone(),
+            }),
+            none: materials.add(Color::NONE.into()),
         });
 
         texture_sources
